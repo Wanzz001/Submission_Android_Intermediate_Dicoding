@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">MyStoryApp</string>
+    <string name="password_hint">Input your password</string>
+    <string name="password_error">Password must be 8 characters!</string>
+    <string name="email_hint">ex: example@gmail.com</string>
+    <string name="email_error">Enter a valid email address!</string>
+    <string name="register">Register</string>
+    <string name="username_hint">Input your username!</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="log_in">Login</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="fill_in_all_fields">Fill in all fields!</string>
+    <string name="register_successfully">Register successfully!</string>
+    <string name="register_failed">Register failed!</string>
+    <string name="login_successfully">Login successfully!</string>
+    <string name="login_failed">Login failed!</string>
+    <string name="username_error">Fill in at least 2 characters!</string>
+    <string name="data_not_found">Data not found</string>
+    <string name="failed_to_get_data">Failed to get data</string>
+    <string name="refresh">Refresh</string>
+    <string name="log_out">Log out</string>
+    <string name="settings">Settings</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="you_logged_out">You logged out</string>
+</resources>
