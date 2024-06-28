@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MyStoryApp</string>
     <string name="password_hint">Input your password</string>
-    <string name="password_error">Password must be 8 characters!</string>
+    <string name="password_error">Password at least 8 characters!</string>
     <string name="email_hint">ex: example@gmail.com</string>
     <string name="email_error">Enter a valid email address!</string>
     <string name="register">Register</string>
@@ -24,4 +24,14 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="you_logged_out">You logged out</string>
+    <string name="detail_story">Detail Story</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="write_the_description_here">Write the description here</string>
+    <string name="upload">Upload</string>
+    <string name="not_allowed">Not allowed</string>
+    <string name="add_story_successfully">Add story successfully</string>
+    <string name="add_story_failed">Add story failed</string>
+    <string name="data_not_complete">Data not complete</string>
+    <string name="choose_a_picture">Choose a picture</string>
 </resources>

@@ -126,8 +126,8 @@ class MainActivity : AppCompatActivity() {
                 dialog.setPositiveButton(getString(R.string.yes)) { _, _ ->
                     userPrefs.clear()
                     startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                    this@MainActivity.finish()
                     Toast.makeText(this@MainActivity, getString(R.string.you_logged_out), Toast.LENGTH_SHORT).show()
+                    this@MainActivity.finish()
                 }
                 dialog.setNegativeButton(getString(R.string.no)) { _, _ ->
                 }

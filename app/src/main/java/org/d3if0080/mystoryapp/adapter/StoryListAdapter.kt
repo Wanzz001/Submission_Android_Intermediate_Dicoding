@@ -56,7 +56,7 @@ class StoryListAdapter(private val context: Context): RecyclerView.Adapter<Story
                     val optionsCompat: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         context as Activity,
                         Pair(ivImgStory, "image"),
-                        Pair(tvTitle, "name"),
+                        Pair(tvTitle, "title"),
                         Pair(tvDesc, "description")
                     )
                     clickListener.onItemClicked(listStory, optionsCompat)

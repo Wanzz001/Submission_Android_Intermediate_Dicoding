@@ -8,7 +8,7 @@ import org.d3if0080.mystoryapp.viewmodel.AuthViewModel
 import org.d3if0080.mystoryapp.viewmodel.UploadStoryViewModel
 
 @Suppress("UNCHECKED_CAST")
-class ViewModelFactory constructor(private val dataRepository: DataRepository) : ViewModelProvider.Factory {
+class ViewModelFactory(private val dataRepository: DataRepository) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {

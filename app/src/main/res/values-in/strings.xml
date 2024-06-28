@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyStoryApp</string>
+    <string name="password_hint">Masukkan kata sandi</string>
+    <string name="password_error">Kata sandi setidaknya 8 karakter!</string>
+    <string name="email_hint">cth: contoh@gmail.com</string>
+    <string name="email_error">Masukkan email yang valid</string>
+    <string name="register">Daftar</string>
+    <string name="username_hint">Masukkan nama pengguna</string>
+    <string name="already_have_an_account">Sudah punya akun?</string>
+    <string name="log_in">Masuk</string>
+    <string name="don_t_have_an_account">Belum punya akun?</string>
+    <string name="fill_in_all_fields">Isi semua field</string>
+    <string name="register_successfully">Berhasil daftar</string>
+    <string name="register_failed">Gagal daftar</string>
+    <string name="login_successfully">Berhasil masuk</string>
+    <string name="login_failed">gagal masuk</string>
+    <string name="username_error">Isi setidaknya 2 karakter</string>
+    <string name="data_not_found">Data tidak ditemukan</string>
+    <string name="failed_to_get_data">Gagal mengambil data</string>
+    <string name="refresh">Segarkan</string>
+    <string name="log_out">Keluar</string>
+    <string name="settings">Pengaturan</string>
+    <string name="are_you_sure">Apakah anda yakin?</string>
+    <string name="yes">Iya</string>
+    <string name="no">Tidak</string>
+    <string name="you_logged_out">Anda telah keluar</string>
+    <string name="detail_story">Detail Cerita</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="write_the_description_here">Tulis deskripsi disini</string>
+    <string name="upload">Unggah</string>
+    <string name="not_allowed">Tidak diizinkan</string>
+    <string name="add_story_successfully">Berhasil tambah cerita</string>
+    <string name="add_story_failed">Gagal tambah cerita</string>
+    <string name="data_not_complete">Data tidak lengkap</string>
+    <string name="choose_a_picture">Pilih sebuah gambar</string>
+</resources>
