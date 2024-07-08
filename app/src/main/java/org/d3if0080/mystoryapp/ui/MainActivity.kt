@@ -36,7 +36,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         userPrefs = UserPrefs(this)
         val dataRepository = DataRepository(ApiClient.getInstance())
-        viewModel = ViewModelProvider(this, ViewModelFactory(dataRepository))[ListStoryViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(dataRepository)
+        )[ListStoryViewModel::class.java]
         lifecycleScope.launch {
             fetchData(userPrefs.token)
         }
@@ -49,19 +52,21 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent, options.toBundle())
         }
 
-        binding.rvStory.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = this@MainActivity.adapter
-        }
-
-        binding.btnRefresh.setOnClickListener {
-            lifecycleScope.launch {
-                fetchData(userPrefs.token)
+        with(binding) {
+            rvStory.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                adapter = this@MainActivity.adapter
             }
-        }
-        binding.fabAddStory.setOnClickListener {
-            startActivity(Intent(this, AddStoryActivity::class.java))
+
+            btnRefresh.setOnClickListener {
+                lifecycleScope.launch {
+                    fetchData(userPrefs.token)
+                }
+            }
+            fabAddStory.setOnClickListener {
+                startActivity(Intent(this@MainActivity, AddStoryActivity::class.java))
+            }
         }
     }
 
@@ -69,30 +74,34 @@ class MainActivity : AppCompatActivity() {
         isLoading(true)
         viewModel.fetchListStory(token)
         viewModel.responseListStory.observe(this@MainActivity) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    if (it.data?.listStory != null) {
-                        binding.rvStory.visibility = View.VISIBLE
-                        binding.tvError.visibility = View.GONE
-                        binding.btnRefresh.visibility = View.GONE
-                        adapter.setData(it.data.listStory)
-                    } else {
-                        binding.rvStory.visibility = View.GONE
-                        binding.tvError.text = getString(R.string.data_not_found)
-                        binding.btnRefresh.visibility = View.VISIBLE
-                        binding.tvError.visibility = View.VISIBLE
+            with(binding) {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        if (it.data?.listStory != null) {
+                            rvStory.visibility = View.VISIBLE
+                            tvError.visibility = View.GONE
+                            btnRefresh.visibility = View.GONE
+                            adapter.setData(it.data.listStory)
+                        } else {
+                            rvStory.visibility = View.GONE
+                            tvError.text = getString(R.string.data_not_found)
+                            btnRefresh.visibility = View.VISIBLE
+                            tvError.visibility = View.VISIBLE
+                        }
+                        isLoading(false)
                     }
-                    isLoading(false)
-                }
-                is NetworkResult.Loading -> {
-                    isLoading(true)
-                }
-                is NetworkResult.Error -> {
-                    isLoading(false)
-                    binding.rvStory.visibility = View.GONE
-                    binding.tvError.text = getString(R.string.failed_to_get_data)
-                    binding.tvError.visibility = View.VISIBLE
-                    binding.btnRefresh.visibility = View.VISIBLE
+
+                    is NetworkResult.Loading -> {
+                        isLoading(true)
+                    }
+
+                    is NetworkResult.Error -> {
+                        isLoading(false)
+                        rvStory.visibility = View.GONE
+                        tvError.text = getString(R.string.failed_to_get_data)
+                        tvError.visibility = View.VISIBLE
+                        btnRefresh.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -103,6 +112,7 @@ class MainActivity : AppCompatActivity() {
             true -> {
                 binding.progressBar.visibility = View.VISIBLE
             }
+
             false -> {
                 binding.progressBar.visibility = View.GONE
             }
@@ -119,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             R.id.settings -> {
                 startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
             }
+
             R.id.logout -> {
                 val dialog = AlertDialog.Builder(this)
                 dialog.setTitle(resources.getString(R.string.log_out))
@@ -126,7 +137,11 @@ class MainActivity : AppCompatActivity() {
                 dialog.setPositiveButton(getString(R.string.yes)) { _, _ ->
                     userPrefs.clear()
                     startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                    Toast.makeText(this@MainActivity, getString(R.string.you_logged_out), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.you_logged_out),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     this@MainActivity.finish()
                 }
                 dialog.setNegativeButton(getString(R.string.no)) { _, _ ->

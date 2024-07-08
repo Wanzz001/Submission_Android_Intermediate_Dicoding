@@ -16,11 +16,11 @@ import org.d3if0080.mystoryapp.databinding.ActivityLoginBinding
 import org.d3if0080.mystoryapp.utils.NetworkResult
 import org.d3if0080.mystoryapp.utils.UserPrefs
 import org.d3if0080.mystoryapp.utils.ViewModelFactory
-import org.d3if0080.mystoryapp.viewmodel.AuthViewModel
+import org.d3if0080.mystoryapp.viewmodel.LoginViewModel
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var viewModel: AuthViewModel
+    private lateinit var viewModel: LoginViewModel
     private lateinit var userPrefs: UserPrefs
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             ViewModelFactory(dataRepository)
-        )[AuthViewModel::class.java]
+        )[LoginViewModel::class.java]
 
         binding.btnLogin.setOnClickListener {
             val email = binding.edLoginEmail.text.toString().trim()

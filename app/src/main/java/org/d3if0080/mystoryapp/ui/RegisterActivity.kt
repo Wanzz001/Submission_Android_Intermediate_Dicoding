@@ -15,17 +15,17 @@ import org.d3if0080.mystoryapp.api.services.ApiClient
 import org.d3if0080.mystoryapp.databinding.ActivityRegisterBinding
 import org.d3if0080.mystoryapp.utils.NetworkResult
 import org.d3if0080.mystoryapp.utils.ViewModelFactory
-import org.d3if0080.mystoryapp.viewmodel.AuthViewModel
+import org.d3if0080.mystoryapp.viewmodel.RegisterViewModel
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var viewModel: AuthViewModel
+    private lateinit var viewModel: RegisterViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val dataRepository = DataRepository(ApiClient.getInstance())
-        viewModel = ViewModelProvider(this, ViewModelFactory(dataRepository))[AuthViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelFactory(dataRepository))[RegisterViewModel::class.java]
 
         binding.btnRegister.setOnClickListener {
             val name = binding.edRegisterName.text.toString().trim()

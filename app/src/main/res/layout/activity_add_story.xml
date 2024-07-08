@@ -28,6 +28,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <ImageView
+            android:contentDescription="Image Preview"
             android:id="@+id/iv_prev"
             android:layout_width="match_parent"
             android:layout_height="350dp"

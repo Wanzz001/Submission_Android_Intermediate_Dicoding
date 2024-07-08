@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.d3if0080.mystoryapp.api.DataRepository
 import org.d3if0080.mystoryapp.viewmodel.ListStoryViewModel
-import org.d3if0080.mystoryapp.viewmodel.AuthViewModel
+import org.d3if0080.mystoryapp.viewmodel.LoginViewModel
+import org.d3if0080.mystoryapp.viewmodel.RegisterViewModel
 import org.d3if0080.mystoryapp.viewmodel.UploadStoryViewModel
 
 @Suppress("UNCHECKED_CAST")
@@ -12,8 +13,11 @@ class ViewModelFactory(private val dataRepository: DataRepository) : ViewModelPr
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(AuthViewModel::class.java) -> {
-                AuthViewModel(dataRepository) as T
+            modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
+                LoginViewModel(dataRepository) as T
+            }
+            modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
+                RegisterViewModel(dataRepository) as T
             }
             modelClass.isAssignableFrom(ListStoryViewModel::class.java) -> {
                 ListStoryViewModel(dataRepository) as T
