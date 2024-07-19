@@ -18,4 +18,13 @@ data class ListStory(
     @field:SerializedName("photoUrl")
     val photoUrl: String,
 
+    @field:SerializedName("createdAt")
+    val createAt: String,
+
+    @field:SerializedName("lat")
+    val latitude: Double?,
+
+    @field:SerializedName("lon")
+    val longitude: Double?
+
 ) : Parcelable

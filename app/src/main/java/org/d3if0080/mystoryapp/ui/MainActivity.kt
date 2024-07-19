@@ -5,20 +5,20 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.launch
 import org.d3if0080.mystoryapp.R
+import org.d3if0080.mystoryapp.adapter.LoadingStateAdapter
 import org.d3if0080.mystoryapp.adapter.StoryListAdapter
 import org.d3if0080.mystoryapp.api.DataRepository
 import org.d3if0080.mystoryapp.api.services.ApiClient
+import org.d3if0080.mystoryapp.database.StoryDatabase
 import org.d3if0080.mystoryapp.databinding.ActivityMainBinding
-import org.d3if0080.mystoryapp.utils.NetworkResult
 import org.d3if0080.mystoryapp.utils.UserPrefs
 import org.d3if0080.mystoryapp.utils.ViewModelFactory
 import org.d3if0080.mystoryapp.viewmodel.ListStoryViewModel
@@ -35,15 +35,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         userPrefs = UserPrefs(this)
-        val dataRepository = DataRepository(ApiClient.getInstance())
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(dataRepository)
-        )[ListStoryViewModel::class.java]
-        lifecycleScope.launch {
-            fetchData(userPrefs.token)
-        }
-
+        val database = StoryDatabase.getDatabase(this)
+        val dataRepository = DataRepository(ApiClient.getInstance(), database)
+        viewModel = ViewModelProvider(this, ViewModelFactory(dataRepository))[ListStoryViewModel::class.java]
         adapter = StoryListAdapter(this)
         adapter.setOnItemClickCallback { selectedStory, options ->
             val intent = Intent(this, DetailActivity::class.java).apply {
@@ -51,73 +45,54 @@ class MainActivity : AppCompatActivity() {
             }
             startActivity(intent, options.toBundle())
         }
+        fetchData(userPrefs.token)
 
         with(binding) {
-            rvStory.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@MainActivity)
-                adapter = this@MainActivity.adapter
-            }
 
             btnRefresh.setOnClickListener {
-                lifecycleScope.launch {
-                    fetchData(userPrefs.token)
-                }
+                fetchData(userPrefs.token)
             }
             fabAddStory.setOnClickListener {
                 startActivity(Intent(this@MainActivity, AddStoryActivity::class.java))
             }
+            btnMap.setOnClickListener {
+                startActivity(Intent(this@MainActivity, MapsActivity::class.java))
+            }
         }
     }
 
-    private suspend fun fetchData(token: String) {
-        isLoading(true)
-        viewModel.fetchListStory(token)
-        viewModel.responseListStory.observe(this@MainActivity) {
-            with(binding) {
-                when (it) {
-                    is NetworkResult.Success -> {
-                        if (it.data?.listStory != null) {
-                            rvStory.visibility = View.VISIBLE
-                            tvError.visibility = View.GONE
-                            btnRefresh.visibility = View.GONE
-                            adapter.setData(it.data.listStory)
-                        } else {
-                            rvStory.visibility = View.GONE
-                            tvError.text = getString(R.string.data_not_found)
-                            btnRefresh.visibility = View.VISIBLE
-                            tvError.visibility = View.VISIBLE
-                        }
-                        isLoading(false)
-                    }
+    private fun fetchData(token: String) {
+        binding.apply {
+            rvStory.setHasFixedSize(true)
+            rvStory.layoutManager = LinearLayoutManager(this@MainActivity)
+            rvStory.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = LoadingStateAdapter { adapter.retry() },
+                footer = LoadingStateAdapter { adapter.retry() }
+            )
+        }
 
-                    is NetworkResult.Loading -> {
-                        isLoading(true)
-                    }
+        viewModel.getStories(token).observe(this) {
+            adapter.submitData(lifecycle, it)
+        }
 
-                    is NetworkResult.Error -> {
-                        isLoading(false)
-                        rvStory.visibility = View.GONE
-                        tvError.text = getString(R.string.failed_to_get_data)
-                        tvError.visibility = View.VISIBLE
-                        btnRefresh.visibility = View.VISIBLE
-                    }
+        adapter.addLoadStateListener {
+            binding.apply {
+                progressBar.isVisible = it.source.refresh is LoadState.Loading
+                rvStory.isVisible = it.source.refresh is LoadState.NotLoading
+                tvError.isVisible = it.source.refresh is LoadState.Error
+                btnRefresh.isVisible = it.source.refresh is LoadState.Error
+
+                if (it.source.refresh is LoadState.NotLoading && it.append.endOfPaginationReached && adapter.itemCount < 1) {
+                    tvError.text = getString(R.string.data_not_found)
+                    rvStory.isVisible = false
+                } else {
+                    tvError.isVisible = false
+                    rvStory.isVisible = true
                 }
             }
         }
     }
 
-    private fun isLoading(loading: Boolean) {
-        when (loading) {
-            true -> {
-                binding.progressBar.visibility = View.VISIBLE
-            }
-
-            false -> {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item, menu)

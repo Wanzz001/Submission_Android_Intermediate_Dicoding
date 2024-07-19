@@ -63,17 +63,39 @@
             app:layout_constraintStart_toEndOf="@+id/btn_cam"
             app:layout_constraintTop_toBottomOf="@+id/iv_prev" />
 
+        <TextView
+            android:id="@+id/tv_share_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="36dp"
+            android:text="@string/share_your_location"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_cam" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="84dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_share_location"
+            app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
+
         <EditText
             android:id="@+id/edt_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="24dp"
             android:hint="@string/write_the_description_here"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_cam" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_share_location" />
 
         <Button
             android:id="@+id/btn_upload"

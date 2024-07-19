@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import org.d3if0080.mystoryapp.api.DataRepository
 import org.d3if0080.mystoryapp.viewmodel.ListStoryViewModel
 import org.d3if0080.mystoryapp.viewmodel.LoginViewModel
+import org.d3if0080.mystoryapp.viewmodel.MapsViewModel
 import org.d3if0080.mystoryapp.viewmodel.RegisterViewModel
 import org.d3if0080.mystoryapp.viewmodel.UploadStoryViewModel
 
@@ -24,6 +25,9 @@ class ViewModelFactory(private val dataRepository: DataRepository) : ViewModelPr
             }
             modelClass.isAssignableFrom(UploadStoryViewModel::class.java) -> {
                 UploadStoryViewModel(dataRepository) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(dataRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("Class ViewModel not Implement")

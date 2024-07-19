@@ -13,6 +13,7 @@ import org.d3if0080.mystoryapp.R
 import org.d3if0080.mystoryapp.api.DataRepository
 import org.d3if0080.mystoryapp.api.services.ApiClient
 import org.d3if0080.mystoryapp.databinding.ActivityLoginBinding
+import org.d3if0080.mystoryapp.utils.EspressoIdlingResource
 import org.d3if0080.mystoryapp.utils.NetworkResult
 import org.d3if0080.mystoryapp.utils.UserPrefs
 import org.d3if0080.mystoryapp.utils.ViewModelFactory
@@ -37,10 +38,10 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edLoginEmail.text.toString().trim()
             val password = binding.edLoginPassword.text.toString().trim()
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(this, getString(R.string.fill_in_all_fields), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, getString(R.string.fill_in_all_fields), Toast.LENGTH_SHORT).show()
             } else {
                 isLoading(true)
+                EspressoIdlingResource.increment()
                 lifecycleScope.launch {
                     viewModel.login(email, password).collect { result ->
                         when (result) {
@@ -49,34 +50,29 @@ class LoginActivity : AppCompatActivity() {
                                 userPrefs.token = result.data.result.token
                                 isLoading(false)
                                 startActivity(
-                                    Intent(
-                                        this@LoginActivity,
-                                        MainActivity::class.java
-                                    )
+                                    Intent(this@LoginActivity, MainActivity::class.java)
                                 )
                                 Toast.makeText(
-                                    this@LoginActivity,
-                                    getString(R.string.login_successfully), Toast.LENGTH_SHORT
+                                    this@LoginActivity, getString(R.string.login_successfully), Toast.LENGTH_SHORT
                                 ).show()
                                 finish()
                             }
-
                             is NetworkResult.Loading -> {
                                 isLoading(true)
                             }
-
                             is NetworkResult.Error -> {
                                 Toast.makeText(
-                                    this@LoginActivity,
-                                    getString(R.string.login_failed), Toast.LENGTH_SHORT
+                                    this@LoginActivity, getString(R.string.login_failed), Toast.LENGTH_SHORT
                                 ).show()
                                 isLoading(false)
                             }
                         }
+                        EspressoIdlingResource.decrement()
                     }
                 }
             }
         }
+
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
             finish()

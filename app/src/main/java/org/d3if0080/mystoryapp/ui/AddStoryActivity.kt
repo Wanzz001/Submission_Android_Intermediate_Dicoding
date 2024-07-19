@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import org.d3if0080.mystoryapp.R
 import org.d3if0080.mystoryapp.api.DataRepository
@@ -37,13 +40,17 @@ class AddStoryActivity : AppCompatActivity() {
     private lateinit var viewModel: UploadStoryViewModel
     private lateinit var userPrefs: UserPrefs
     private lateinit var currentPhotoPath: String
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var imgFile: File? = null
+    private var location: Location? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         userPrefs = UserPrefs(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         val dataRepository = DataRepository(ApiClient.getInstance())
         viewModel = ViewModelProvider(
             this,
@@ -69,6 +76,13 @@ class AddStoryActivity : AppCompatActivity() {
                 uploadStory(userPrefs.token)
             } else {
                 Toast.makeText(this, getString(R.string.data_not_complete), Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.switchLocation.setOnCheckedChangeListener {_, isChecked ->
+            if(isChecked) {
+                getLastLocation()
+            } else {
+                location = null
             }
         }
     }
@@ -142,8 +156,16 @@ class AddStoryActivity : AppCompatActivity() {
         isLoading(true)
         val file = reduceFileImage(imgFile as File)
         val description = binding.edtDesc.text.toString().trim()
+        var lat : String? = null
+        var lon : String? = null
+
+        if(location != null) {
+            lat = location?.latitude.toString()
+            lon = location?.longitude.toString()
+        }
+
         lifecycleScope.launch {
-            viewModel.uploadStory(auth, description, file).collect { result ->
+            viewModel.uploadStory(auth, description, file, lat, lon).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         isLoading(false)
@@ -172,6 +194,43 @@ class AddStoryActivity : AppCompatActivity() {
             }
             false -> {
                 binding.progressBar.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun getLastLocation() {
+        if(ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                if(it != null) {
+                    location = it
+                } else {
+                    Toast.makeText(this,
+                        getString(R.string.please_allow_to_access_your_location), Toast.LENGTH_SHORT).show()
+                    binding.switchLocation.isChecked = false
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                getLastLocation()
+            }
+            else -> {
+                Toast.makeText(this, getString(R.string.location_not_allowed), Toast.LENGTH_SHORT).show()
+                binding.switchLocation.isChecked = false
             }
         }
     }

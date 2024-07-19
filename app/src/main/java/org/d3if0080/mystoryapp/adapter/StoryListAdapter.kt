@@ -6,26 +6,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import org.d3if0080.mystoryapp.api.response.home.ListStory
+import org.d3if0080.mystoryapp.database.Story
 import org.d3if0080.mystoryapp.databinding.ItemListBinding
 
-class StoryListAdapter(private val context: Context): RecyclerView.Adapter<StoryListAdapter.ViewHolder>() {
+class StoryListAdapter(private val context: Context) :
+    PagingDataAdapter<Story, StoryListAdapter.ViewHolder>(DIFF_CALLBACK) {
+
     private lateinit var onItemClickCallback: OnItemClickCallback
-    private val listStory = ArrayList<ListStory>()
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
-    }
-
-    fun setData(data: List<ListStory>) {
-        val diffCallback = DiffUtilCallback(listStory, data)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        listStory.clear()
-        listStory.addAll(data)
-        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,18 +28,15 @@ class StoryListAdapter(private val context: Context): RecyclerView.Adapter<Story
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val fav = listStory[position]
-        holder.bind(fav, onItemClickCallback)
-    }
-
-    override fun getItemCount(): Int {
-        return listStory.size
+        val data = getItem(position)
+        if (data != null) {
+            holder.bind(data, onItemClickCallback)
+        }
     }
 
     class ViewHolder(private val binding: ItemListBinding, private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(listStory: ListStory, clickListener: OnItemClickCallback) {
+        fun bind(listStory: Story, clickListener: OnItemClickCallback) {
             with(binding) {
                 tvTitle.text = listStory.name
                 tvDesc.text = listStory.description
@@ -66,39 +57,19 @@ class StoryListAdapter(private val context: Context): RecyclerView.Adapter<Story
     }
 
     fun interface OnItemClickCallback {
-        fun onItemClicked(selected: ListStory, options: ActivityOptionsCompat)
+        fun onItemClicked(selectedStory: Story, options: ActivityOptionsCompat)
     }
 
-    class DiffUtilCallback(
-        private val oldList: List<ListStory>,
-        private val newList: List<ListStory>
-    ) : DiffUtil.Callback() {
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>() {
+            override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
-            return oldItem == newItem
-        }
-
-        @Override
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-            return super.getChangePayload(oldItemPosition, newItemPosition)
+            override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 }
+

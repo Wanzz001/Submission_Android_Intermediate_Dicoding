@@ -1,22 +1,16 @@
 package org.d3if0080.mystoryapp.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.collectLatest
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import org.d3if0080.mystoryapp.api.DataRepository
-import org.d3if0080.mystoryapp.api.response.home.ResponseHome
-import org.d3if0080.mystoryapp.utils.NetworkResult
+import org.d3if0080.mystoryapp.database.Story
 
-class ListStoryViewModel(private val dataRepository: DataRepository): ViewModel() {
+class ListStoryViewModel(private val storyRepository: DataRepository): ViewModel() {
 
-    private val listStory = MutableLiveData<NetworkResult<ResponseHome>>()
-    val responseListStory: LiveData<NetworkResult<ResponseHome>> = listStory
-
-    suspend fun fetchListStory(auth: String) {
-            dataRepository.getStories(auth).collectLatest {
-                listStory.value = it
-
-        }
-    }
+    fun getStories(auth: String): LiveData<PagingData<Story>> =
+        storyRepository.getStories(auth).cachedIn(viewModelScope).asLiveData()
 }

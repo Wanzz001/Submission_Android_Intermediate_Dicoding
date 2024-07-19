@@ -14,7 +14,7 @@
     <string name="register_successfully">Berhasil daftar</string>
     <string name="register_failed">Gagal daftar</string>
     <string name="login_successfully">Berhasil masuk</string>
-    <string name="login_failed">gagal masuk</string>
+    <string name="login_failed">Gagal masuk</string>
     <string name="username_error">Isi setidaknya 2 karakter</string>
     <string name="data_not_found">Data tidak ditemukan</string>
     <string name="failed_to_get_data">Gagal mengambil data</string>
@@ -35,4 +35,7 @@
     <string name="add_story_failed">Gagal tambah cerita</string>
     <string name="data_not_complete">Data tidak lengkap</string>
     <string name="choose_a_picture">Pilih sebuah gambar</string>
+    <string name="share_your_location">Bagikan lokasimu?</string>
+    <string name="location_not_allowed">Lokasi tidak diizinkan</string>
+    <string name="please_allow_to_access_your_location">Izinkan lokasi untuk mengakses lokasimu</string>
 </resources>

@@ -34,4 +34,8 @@
     <string name="add_story_failed">Add story failed</string>
     <string name="data_not_complete">Data not complete</string>
     <string name="choose_a_picture">Choose a picture</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="share_your_location">Share your location?</string>
+    <string name="location_not_allowed">Location not allowed</string>
+    <string name="please_allow_to_access_your_location">Please allow to access your location</string>
 </resources>
